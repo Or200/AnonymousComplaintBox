@@ -28,17 +28,17 @@ api.post("/api/complaints", async (req, res) => {
 
 api.post("/api/admin/login", async (req, res) => {
   const { password } = req.body;
-  if (password !== process.env.ADMIN_PASSWORD) {
-    return res.status(401).json({ error: "Unauthorized: password wrong" });
-  }
+  // if (password !== process.env.ADMIN_PASSWORD) {
+  //   return res.status(401).json({ error: "Unauthorized: password wrong" });
+  // }
   try {
     const userPassObj = await mongoDB
       .collection("users")
       .find({ password: password })
       .toArray();
 
-    if (userPassObj) {
-      const userToken = tokenCreator(userPassObj);
+    if (userPassObj.length !== 0) {
+      const userToken = tokenCreator(userPassObj[0]);
       res
         .status(200)
         .json({ message: "Verification successful", token: userToken });
